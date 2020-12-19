@@ -1,11 +1,25 @@
+from django import forms
 from django.shortcuts import render
 
 from . import util
 
+# create our form class
+class SearchInputForm(forms.Form):
+    input_field = forms.CharField(label='search')
 
 def index(request):
+    if request.method == "POST":
+        form = SearchInputForm(request.POST)
+        if form.is_valid():
+            search = form.cleaned_data["input_field"]
+            return wiki(request, search)
+        else:
+            return render(request, "encyclopedia/index.html",{
+                "form":form
+            })
     return render(request, "encyclopedia/index.html", {
-        "entries": util.list_entries()
+        "entries": util.list_entries(),
+        "form":SearchInputForm()
     })
 
 def wiki(request, name):

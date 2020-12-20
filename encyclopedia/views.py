@@ -7,6 +7,9 @@ from . import util
 class SearchInputForm(forms.Form):
     input_field = forms.CharField(label='search')
 
+class NewpageInputForm(forms.Form):
+    title_field = forms.CharField(label="Title")
+
 def index(request):
     if request.method == "POST":
         form = SearchInputForm(request.POST)
@@ -23,6 +26,7 @@ def index(request):
     })
 
 def wiki(request, name):
+    """ Returns a search about a word """
     if util.get_entry(name):
         return render(request, "encyclopedia/entry.html", {
             "name":util.get_entry(name),
@@ -35,3 +39,8 @@ def wiki(request, name):
             "error":error,
             "error_code":error_code
         })
+
+def newPageEntry(request):
+    return render(request, "encyclopedia/createpage.html", {
+        "newpageform":NewpageInputForm()
+    })
